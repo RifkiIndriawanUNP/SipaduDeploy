@@ -6,7 +6,8 @@ import os
 import math
 import json
 
-app = Flask(__name__, static_folder='../frontend', static_url_path='')
+# Untuk Railway: static_folder mengarah ke folder frontend di dalam backend
+app = Flask(__name__, static_folder='frontend', static_url_path='')
 CORS(app)
 
 # Custom JSON encoder untuk handle NaN
@@ -50,7 +51,8 @@ def serve_frontend():
 @app.route('/<path:path>')
 def serve_static(path):
     """Serve static files"""
-    if os.path.exists(os.path.join(app.static_folder, path)):
+    file_path = os.path.join(app.static_folder, path)
+    if os.path.exists(file_path):
         return send_from_directory(app.static_folder, path)
     return send_from_directory(app.static_folder, 'index.html')
 
@@ -63,7 +65,7 @@ def test():
         'server_running': True,
         'data_loaded': len(kab_list) > 0,
         'total_kabupaten': len(kab_list),
-        'kabupaten_list': kab_list,
+        'kabupaten_list': kab_list[:5],
         'sample_search': {
             'try_these': [
                 'KABUPATEN BANDUNG',
@@ -105,7 +107,7 @@ def get_kabupaten_detail(kabupaten_name):
             return jsonify({
                 'status': 'error',
                 'message': f'Kabupaten/Kota "{kabupaten_name}" tidak ditemukan',
-                'available_kabupaten': available,
+                'available_kabupaten': available[:10],
                 'hint': 'Gunakan nama lengkap seperti "KABUPATEN BANDUNG" atau "KOTA BANDUNG"'
             }), 404
         
@@ -208,12 +210,12 @@ def debug_names():
         ]
     })
 
+# Untuk Railway: gunakan PORT dari environment variable
 if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
     print("\n" + "="*60)
-    print("🌐 Buka browser di: http://localhost:5000")
-    print("📝 API Test: http://localhost:5000/api/test")
-    print("🔍 Debug Names: http://localhost:5000/api/debug/names")
-    print("📋 List: http://localhost:5000/api/kabupaten")
-    print("🔍 Search: http://localhost:5000/api/search?q=bandung")
+    print(f"🌐 Server berjalan di port {port}")
+    print("📝 API Test: /api/test")
+    print("📋 List: /api/kabupaten")
     print("="*60 + "\n")
-    app.run(debug=True, port=5000)
+    app.run(debug=False, host='0.0.0.0', port=port)

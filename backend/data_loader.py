@@ -9,9 +9,10 @@ class DataLoader:
     
     def load_data(self):
         """Load CSV data with comma separator"""
+        # Path untuk Railway: cari di folder data/ di dalam backend
         possible_paths = [
-            os.path.join(os.path.dirname(__file__), '..', 'data', 'Infrastruktur_jabar.csv'),
             os.path.join(os.path.dirname(__file__), 'data', 'Infrastruktur_jabar.csv'),
+            os.path.join(os.path.dirname(__file__), '..', 'data', 'Infrastruktur_jabar.csv'),
             os.path.join('data', 'Infrastruktur_jabar.csv'),
             'Infrastruktur_jabar.csv'
         ]
@@ -74,7 +75,7 @@ class DataLoader:
             print(f"\n📊 Sample data ({len(self.data)} kabupaten):")
             for i in range(min(5, len(self.data))):
                 row = self.data.iloc[i]
-                print(f"   [{i}] '{row['kabupaten']}' -> penduduk={row['jumlah_penduduk']}, jalan={row['Panjang Jalan']}, luas={row['Luas Wilayah']}")
+                print(f"   [{i}] '{row['kabupaten']}' -> penduduk={row['jumlah_penduduk']}")
             
             print(f"\n✅ Data siap!")
             
